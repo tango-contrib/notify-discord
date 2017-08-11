@@ -120,16 +120,18 @@ func Discord(opts ...Options) tango.HandlerFunc {
 				},
 			}
 
-			b := new(bytes.Buffer)
-			if err := json.NewEncoder(b).Encode(payload); err != nil {
-				ctx.Error(err)
-				return
-			}
+			go func(payload *PayLoad) {
+				b := new(bytes.Buffer)
+				if err := json.NewEncoder(b).Encode(payload); err != nil {
+					ctx.Error(err)
+					return
+				}
 
-			_, err = http.Post(opt.WebhookURL, "application/json; charset=utf-8", b)
-			if err != nil {
-				ctx.Error(err)
-			}
+				_, err = http.Post(opt.WebhookURL, "application/json; charset=utf-8", b)
+				if err != nil {
+					ctx.Error(err)
+				}
+			}(&payload)
 		}
 	}
 }

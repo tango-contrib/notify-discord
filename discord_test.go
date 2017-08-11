@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/lunny/tango"
 )
@@ -22,7 +23,7 @@ func TestNotify(t *testing.T) {
 		Source:       "discord-test",
 	}))
 	tg.Post("/", func(ctx *tango.Context) {
-		ctx.Abort(500, "test discord error")
+		ctx.Abort(500, "test2 discord error")
 	})
 
 	b := bytes.NewBufferString("testest")
@@ -32,6 +33,8 @@ func TestNotify(t *testing.T) {
 	}
 
 	tg.ServeHTTP(recorder, req)
+
+	time.Sleep(time.Second * 5)
 	expect(t, recorder.Code, 500)
 	refute(t, len(buff.String()), 0)
 }
