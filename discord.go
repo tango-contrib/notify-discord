@@ -92,7 +92,7 @@ func Discord(opts ...Options) tango.HandlerFunc {
 	return func(ctx *tango.Context) {
 		ctx.Next()
 
-		if ctx.ResponseWriter.Status()/100 != 2 {
+		if ctx.ResponseWriter.Status()/100 == 5 {
 			body, err := ctx.Body()
 			if err != nil {
 				ctx.Error(err)
@@ -107,7 +107,7 @@ func Discord(opts ...Options) tango.HandlerFunc {
 			var payload = PayLoad{
 				Embeds: []EmbedObject{
 					{
-						Title: fmt.Sprintf("%d %s %v", ctx.ResponseWriter.Status(), p, ctx.Result),
+						Title: fmt.Sprintf("%s %d %v", p, ctx.ResponseWriter.Status(), ctx.Result),
 						Description: fmt.Sprintf("Request %s From %s failed: %s",
 							ctx.Req().URL.String(), ctx.IP(), string(body)),
 						URL:   ctx.Req().URL.String(),

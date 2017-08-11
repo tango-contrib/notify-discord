@@ -19,8 +19,11 @@ func TestNotify(t *testing.T) {
 	tg.Use(Discord(Options{
 		WebhookID:    "",
 		WebhookToken: "",
-		Source:       "",
+		Source:       "discord-test",
 	}))
+	tg.Post("/", func(ctx *tango.Context) {
+		ctx.Abort(500, "test discord error")
+	})
 
 	b := bytes.NewBufferString("testest")
 	req, err := http.NewRequest("POST", "http://localhost:8000/", b)
@@ -29,9 +32,8 @@ func TestNotify(t *testing.T) {
 	}
 
 	tg.ServeHTTP(recorder, req)
-	expect(t, recorder.Code, http.StatusNotFound)
+	expect(t, recorder.Code, 500)
 	refute(t, len(buff.String()), 0)
-	expect(t, buff.String(), "You are a writer")
 }
 
 /* Test Helpers */
